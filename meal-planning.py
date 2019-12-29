@@ -18,27 +18,51 @@ class Recipe:
     def __init__(self, name, ingredients={}):
         self.name = name
         self.ingredients = ingredients # ingredient -> number of units
+
+    def GetCost(self):
+        cost = 0.0
+        for ing, amount in self.ingredients.items():
+            cost += ing.cost*amount
+        return cost
     
 class Meal:
     def __init__(self, recipes=[]):
         self.recipes = recipes
         
+    def GetCost(self):
+        return sum([item.GetCost() for item in self.recipes])
+
 class Menu:
     def __init__(self, meals=[]):
         self.meals = meals # List of meals
+        self.UpdateIngredientTotals()
 
-    def PrintGroceryList(self):
-        # Gather the ingredients from all the meals
-        store_lists = {} # store->list of ingredients
+    def GetCost(self):
+        return sum([item.GetCost() for item in self.meals])
+
+    def UpdateIngredientTotals(self):
+        self.ingredient_totals = {} # ingredient->total amount
         for meal in self.meals:
             for recipe in meal.recipes:
                 for ingredient, amount in recipe.ingredients.items():
-                    store = ingredient.store
-                    name = ingredient.name
-                    if store in store_lists.keys():
-                        store_lists[store].add(name)
-                    else:
-                        store_lists[store] = set([name])
+                    if ingredient in self.ingredient_totals:
+                        self.ingredient_totals[ingredient] += amount
+                    else: self.ingredient_totals[ingredient] = amount
+
+    def PrintGroceryList(self):
+        # Update ingredient list
+        self.UpdateIngredientTotals()
+
+        # Gather the ingredients for all stores
+        store_lists = {} # store->list of ingredients
+        for ingredient, amount in self.ingredient_totals.items():
+            store = ingredient.store
+            name = ingredient.name
+            if store in store_lists.keys():
+                store_lists[store].add(name)
+            else:
+                store_lists[store] = set([name])
+
         # Print the lists for each store
         for store in store_lists.keys():
             print("#### %s ######"%store)
@@ -69,3 +93,4 @@ test_meal = Meal(recipes=[pancakes, orange_chicken, broccoli, rice])
 
 my_menu = Menu(meals=[test_meal])
 my_menu.PrintGroceryList()
+print("Total cost: %2.f"%my_menu.GetCost())

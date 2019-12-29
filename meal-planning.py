@@ -62,7 +62,7 @@ i_salt = Ingredient("salt", cost=0.0, unitsize=0.0, store=TJ)
 pancakes = Recipe("pancakes", ingredients={i_flour: 1, i_eggs: 1, i_sugar: 1, i_salt: 1})
 orange_chicken = Recipe("orange chicken", ingredients={i_orange_chicken: 1})
 rice = Recipe("rice", ingredients={i_rice: 1, i_salt: 1})
-broccoli = Recipe("broccoli", ingredients={i_broccoli: 1})
+broccoli = Recipe("broccoli", ingredients={i_broccoli: 2})
 
 # Define meals
 test_meal = Meal(recipes=[pancakes, orange_chicken, broccoli, rice])
